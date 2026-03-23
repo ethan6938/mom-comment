@@ -181,11 +181,10 @@
 
         <div class="buttons">
           <button type="submit" class="btn btn-primary">Save Message</button>
-          <a href="index.html" class="btn btn-secondary">Back to Main Page</a>
         </div>
 
         <div class="saved-note" id="savedNote">
-          Message saved successfully. Returning to the main page...
+          Message saved successfully. You can now go back to the main page.
         </div>
       </form>
     </div>
@@ -207,32 +206,26 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
     }
 
-    if (form && nameInput && messageInput && savedNote) {
-      form.addEventListener("submit", function(event) {
-        event.preventDefault();
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
 
-        const name = nameInput.value.trim();
-        const message = messageInput.value.trim();
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
 
-        if (!name || !message) return;
+      if (!name || !message) return;
 
-        const comments = getComments();
+      const comments = getComments();
 
-        comments.push({
-          name: name,
-          message: message,
-          date: new Date().toLocaleString()
-        });
-
-        saveComments(comments);
-        form.reset();
-        savedNote.classList.add("show");
-
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1200);
+      comments.push({
+        name: name,
+        message: message,
+        date: new Date().toLocaleString()
       });
-    }
+
+      saveComments(comments);
+      form.reset();
+      savedNote.classList.add("show");
+    });
   </script>
 </body>
 </html>
