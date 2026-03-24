@@ -207,6 +207,7 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
     }
 
+     if (form && nameInput && messageInput && savedNote) {
     form.addEventListener("submit", function(event) {
       event.preventDefault();
 
@@ -227,6 +228,7 @@
       form.reset();
       savedNote.classList.add("show");
     });
+     }
   </script>
 </body>
 </html>
