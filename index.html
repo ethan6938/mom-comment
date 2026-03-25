@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -161,6 +162,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="card">
@@ -199,15 +201,17 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyCY4XIK1bg2CtArLp_ZSX2MXQGb68RPPgM",
+      authDomain: "fifth-tangent-462611-c9.firebaseapp.com",
+      databaseURL: "https://fifth-tangent-462611-c9-default-rtdb.firebaseio.com",
+      projectId: "fifth-tangent-462611-c9",
+      storageBucket: "fifth-tangent-462611-c9.firebasestorage.app",
+      messagingSenderId: "710866652883",
+      appId: "1:710866652883:web:1a65807df3de4c2b274e26",
+      measurementId: "G-V231BTK19R"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -241,4 +245,5 @@
     }
   </script>
 </body>
+
 </html>
