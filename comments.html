@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -162,7 +161,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="card">
@@ -183,11 +181,11 @@
 
         <div class="buttons">
           <button type="submit" class="btn btn-primary">Save Message</button>
-
+          <a href="index.html" class="btn btn-secondary">Back to Main Page</a>
         </div>
 
         <div class="saved-note" id="savedNote">
-          Message saved successfully. You can now go back to the main page.
+          Message saved successfully. Returning to the main page...
         </div>
       </form>
     </div>
@@ -210,7 +208,7 @@
     }
 
     if (form && nameInput && messageInput && savedNote) {
-      form.addEventListener("submit", function (event) {
+      form.addEventListener("submit", function(event) {
         event.preventDefault();
 
         const name = nameInput.value.trim();
@@ -229,9 +227,12 @@
         saveComments(comments);
         form.reset();
         savedNote.classList.add("show");
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
       });
     }
   </script>
 </body>
-
 </html>
