@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -162,7 +161,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="card">
@@ -183,34 +181,44 @@
 
         <div class="buttons">
           <button type="submit" class="btn btn-primary">Save Message</button>
-
+          <a href="https://mom-lemon.vercel.app/" class="btn btn-secondary">Back to Main Page</a>
         </div>
 
         <div class="saved-note" id="savedNote">
-          Message saved successfully. You can now go back to the main page.
+          Message saved successfully. Returning to the main page...
         </div>
       </form>
     </div>
   </div>
 
-  <script>
-    const STORAGE_KEY = "momBirthdayComments";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const form = document.getElementById("birthdayForm");
     const nameInput = document.getElementById("commentName");
     const messageInput = document.getElementById("commentMessage");
     const savedNote = document.getElementById("savedNote");
 
-    function getComments() {
-      const savedComments = localStorage.getItem(STORAGE_KEY);
-      return savedComments ? JSON.parse(savedComments) : [];
-    }
-
-    function saveComments(comments) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-    }
-
     if (form && nameInput && messageInput && savedNote) {
-      form.addEventListener("submit", function (event) {
+      form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const name = nameInput.value.trim();
@@ -218,20 +226,20 @@
 
         if (!name || !message) return;
 
-        const comments = getComments();
-
-        comments.push({
-          name: name,
-          message: message,
-          date: new Date().toLocaleString()
+        await addDoc(collection(db, "birthdayComments"), {
+          name,
+          message,
+          createdAt: serverTimestamp()
         });
 
-        saveComments(comments);
         form.reset();
         savedNote.classList.add("show");
+
+        setTimeout(() => {
+          window.location.href = "https://mom-lemon.vercel.app/";
+        }, 1200);
       });
     }
   </script>
 </body>
-
 </html>
