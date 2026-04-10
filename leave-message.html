@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -162,7 +161,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="card">
@@ -174,7 +172,7 @@
 
       <form class="birthday-form" id="birthdayForm">
         <div class="form-row">
-          <input type="text" id="commentName" placeholder="Your name" required>
+          <input type="text" id="commentName" placeholder="Your name" required />
         </div>
 
         <div class="form-row">
@@ -183,6 +181,7 @@
 
         <div class="buttons">
           <button type="submit" class="btn btn-primary">Save Message</button>
+          <a href="index.html" class="btn btn-secondary">Back</a>
         </div>
 
         <div class="saved-note" id="savedNote">
@@ -193,42 +192,56 @@
   </div>
 
   <script>
-  const birthdayForm = document.getElementById("birthdayForm");
-  const commentName = document.getElementById("commentName");
-  const commentMessage = document.getElementById("commentMessage");
-  const savedNote = document.getElementById("savedNote");
+    const birthdayForm = document.getElementById("birthdayForm");
+    const commentName = document.getElementById("commentName");
+    const commentMessage = document.getElementById("commentMessage");
+    const savedNote = document.getElementById("savedNote");
 
-  birthdayForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
+    birthdayForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-    const name = commentName.value.trim();
-    const message = commentMessage.value.trim();
+      const name = commentName.value.trim();
+      const message = commentMessage.value.trim();
 
-    if (!name || !message) {
-      alert("Please enter your name and message.");
-      return;
-    }
+      if (!name || !message) {
+        alert("Please enter your name and message.");
+        return;
+      }
 
-    const res = await fetch("/api/comments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ name, message })
+      try {
+        const res = await fetch("/api/comments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, message })
+        });
+
+        const text = await res.text();
+        let data = {};
+
+        try {
+          data = text ? JSON.parse(text) : {};
+        } catch (err) {
+          console.error("Response was not JSON:", text);
+        }
+
+        if (!res.ok) {
+          alert(data.error || text || "Could not save message.");
+          return;
+        }
+
+        savedNote.classList.add("show");
+        birthdayForm.reset();
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 700);
+      } catch (error) {
+        console.error(error);
+        alert("Request failed.");
+      }
     });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || "Could not save message.");
-      return;
-    }
-
-    savedNote.classList.add("show");
-    birthdayForm.reset();
-
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 700);
-  });
-</script>
+  </script>
+</body>
+</html>
