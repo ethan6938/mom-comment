@@ -195,22 +195,11 @@
 
  <script>
   const STORAGE_KEY = "momBirthdayComments";
-  const commentsGrid = document.getElementById("commentsGrid");
-  const cardClasses = ["rose", "amber", "sky"];
 
-  const editModal = document.getElementById("editModal");
-  const editName = document.getElementById("editName");
-  const editMessage = document.getElementById("editMessage");
-  const saveEditBtn = document.getElementById("saveEditBtn");
-  const cancelEditBtn = document.getElementById("cancelEditBtn");
-
-  let currentEditIndex = null;
-
-  function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text || "";
-    return div.innerHTML;
-  }
+  const birthdayForm = document.getElementById("birthdayForm");
+  const commentName = document.getElementById("commentName");
+  const commentMessage = document.getElementById("commentMessage");
+  const savedNote = document.getElementById("savedNote");
 
   function getComments() {
     try {
@@ -232,101 +221,29 @@
     }
   }
 
-  function openEditModal(index) {
-    const comments = getComments();
-    const comment = comments[index];
-    if (!comment || !editModal || !editName || !editMessage) return;
+  if (birthdayForm) {
+    birthdayForm.addEventListener("submit", function(e) {
+      e.preventDefault();
 
-    currentEditIndex = index;
-    editName.value = comment.name || "";
-    editMessage.value = comment.message || "";
-    editModal.classList.add("active");
-  }
+      const name = commentName.value.trim();
+      const message = commentMessage.value.trim();
 
-  function closeEditModal() {
-    if (!editModal) return;
-    editModal.classList.remove("active");
-    currentEditIndex = null;
-  }
-
-  function deleteComment(index) {
-    const comments = getComments();
-    comments.splice(index, 1);
-    saveComments(comments);
-    renderCommentsOnMainPage();
-  }
-
-  function renderCommentsOnMainPage() {
-    if (!commentsGrid) return;
-
-    const comments = getComments();
-
-    if (!Array.isArray(comments) || comments.length === 0) {
-      commentsGrid.innerHTML = `
-        <div class="empty-comments">
-          No birthday messages yet.
-        </div>
-      `;
-      return;
-    }
-
-    const newestFirst = comments
-      .map((comment, originalIndex) => ({ comment, originalIndex }))
-      .reverse();
-
-    commentsGrid.innerHTML = newestFirst.map((item, index) => {
-      const colorClass = cardClasses[index % cardClasses.length];
-      return `
-        <div class="wish-card comment-card ${colorClass}">
-          <div class="icon">💌</div>
-          <div class="comment-name">${escapeHtml(item.comment?.name)}</div>
-          <div class="comment-text">${escapeHtml(item.comment?.message)}</div>
-          <div class="comment-date">${escapeHtml(item.comment?.date)}</div>
-          <div class="comment-actions">
-            <button class="comment-btn edit-btn" onclick="openEditModal(${item.originalIndex})">Edit</button>
-            <button class="comment-btn delete-btn" onclick="deleteComment(${item.originalIndex})">Delete</button>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  if (saveEditBtn) {
-    saveEditBtn.addEventListener("click", function() {
-      if (currentEditIndex === null || !editName || !editMessage) return;
-
-      const updatedName = editName.value.trim();
-      const updatedMessage = editMessage.value.trim();
-
-      if (!updatedName || !updatedMessage) return;
+      if (!name || !message) return;
 
       const comments = getComments();
-      if (!comments[currentEditIndex]) return;
 
-      comments[currentEditIndex].name = updatedName;
-      comments[currentEditIndex].message = updatedMessage;
-      comments[currentEditIndex].date = "Edited: " + new Date().toLocaleString();
+      comments.push({
+        name: name,
+        message: message,
+        date: new Date().toLocaleString()
+      });
 
-      saveComments(comments);
-      renderCommentsOnMainPage();
-      closeEditModal();
-    });
-  }
+      const saved = saveComments(comments);
 
-  if (cancelEditBtn) {
-    cancelEditBtn.addEventListener("click", closeEditModal);
-  }
-
-  if (editModal) {
-    editModal.addEventListener("click", function(e) {
-      if (e.target === editModal) {
-        closeEditModal();
+      if (saved) {
+        birthdayForm.reset();
+        if (savedNote) savedNote.classList.add("show");
       }
     });
   }
-
-  renderCommentsOnMainPage();
-
-  window.openEditModal = openEditModal;
-  window.deleteComment = deleteComment;
 </script>
