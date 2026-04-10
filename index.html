@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -162,7 +161,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="card">
@@ -183,67 +181,82 @@
 
         <div class="buttons">
           <button type="submit" class="btn btn-primary">Save Message</button>
-
+          <a href="index.html" class="btn btn-secondary">Back to Main Page</a>
         </div>
 
         <div class="saved-note" id="savedNote">
-          Message saved successfully. You can now go back to the main page.
+          Message saved successfully. Redirecting...
         </div>
       </form>
     </div>
   </div>
 
- <script>
-  const STORAGE_KEY = "momBirthdayComments";
+  <script>
+    const STORAGE_KEY = "momBirthdayComments";
 
-  const birthdayForm = document.getElementById("birthdayForm");
-  const commentName = document.getElementById("commentName");
-  const commentMessage = document.getElementById("commentMessage");
-  const savedNote = document.getElementById("savedNote");
+    const birthdayForm = document.getElementById("birthdayForm");
+    const commentName = document.getElementById("commentName");
+    const commentMessage = document.getElementById("commentMessage");
+    const savedNote = document.getElementById("savedNote");
 
-  function getComments() {
-    try {
-      const savedComments = localStorage.getItem(STORAGE_KEY);
-      return savedComments ? JSON.parse(savedComments) : [];
-    } catch (error) {
-      console.error("Could not read comments from storage:", error);
-      return [];
-    }
-  }
-
-  function saveComments(comments) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-      return true;
-    } catch (error) {
-      console.error("Could not save comments to storage:", error);
-      return false;
-    }
-  }
-
-  if (birthdayForm) {
-    birthdayForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const name = commentName.value.trim();
-      const message = commentMessage.value.trim();
-
-      if (!name || !message) return;
-
-      const comments = getComments();
-
-      comments.push({
-        name: name,
-        message: message,
-        date: new Date().toLocaleString()
-      });
-
-      const saved = saveComments(comments);
-
-      if (saved) {
-        birthdayForm.reset();
-        if (savedNote) savedNote.classList.add("show");
+    function getComments() {
+      try {
+        const savedComments = localStorage.getItem(STORAGE_KEY);
+        return savedComments ? JSON.parse(savedComments) : [];
+      } catch (error) {
+        console.error("Could not read comments from storage:", error);
+        return [];
       }
-    });
-  }
-</script>
+    }
+
+    function saveComments(comments) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+        return true;
+      } catch (error) {
+        console.error("Could not save comments to storage:", error);
+        return false;
+      }
+    }
+
+    if (birthdayForm) {
+      birthdayForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const name = commentName.value.trim();
+        const message = commentMessage.value.trim();
+
+        if (!name || !message) {
+          alert("Please enter your name and message.");
+          return;
+        }
+
+        const comments = getComments();
+
+        comments.push({
+          name: name,
+          message: message,
+          date: new Date().toLocaleString()
+        });
+
+        const saved = saveComments(comments);
+
+        if (!saved) {
+          alert("Your message could not be saved.");
+          return;
+        }
+
+        if (savedNote) {
+          savedNote.classList.add("show");
+        }
+
+        birthdayForm.reset();
+
+        setTimeout(function() {
+          window.location.href = "index.html";
+        }, 700);
+      });
+    }
+  </script>
+</body>
+</html>
