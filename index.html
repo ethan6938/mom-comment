@@ -193,72 +193,42 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "momBirthdayComments";
+  const birthdayForm = document.getElementById("birthdayForm");
+  const commentName = document.getElementById("commentName");
+  const commentMessage = document.getElementById("commentMessage");
+  const savedNote = document.getElementById("savedNote");
 
-    const birthdayForm = document.getElementById("birthdayForm");
-    const commentName = document.getElementById("commentName");
-    const commentMessage = document.getElementById("commentMessage");
-    const savedNote = document.getElementById("savedNote");
+  birthdayForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-    function getComments() {
-      try {
-        const savedComments = localStorage.getItem(STORAGE_KEY);
-        return savedComments ? JSON.parse(savedComments) : [];
-      } catch (error) {
-        console.error("Could not read comments from storage:", error);
-        return [];
-      }
+    const name = commentName.value.trim();
+    const message = commentMessage.value.trim();
+
+    if (!name || !message) {
+      alert("Please enter your name and message.");
+      return;
     }
 
-    function saveComments(comments) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-        return true;
-      } catch (error) {
-        console.error("Could not save comments to storage:", error);
-        return false;
-      }
+    const res = await fetch("/api/comments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, message })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Could not save message.");
+      return;
     }
 
-    if (birthdayForm) {
-      birthdayForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+    savedNote.classList.add("show");
+    birthdayForm.reset();
 
-        const name = commentName.value.trim();
-        const message = commentMessage.value.trim();
-
-        if (!name || !message) {
-          alert("Please enter your name and message.");
-          return;
-        }
-
-        const comments = getComments();
-
-        comments.push({
-          name: name,
-          message: message,
-          date: new Date().toLocaleString()
-        });
-
-        const saved = saveComments(comments);
-
-        if (!saved) {
-          alert("Your message could not be saved.");
-          return;
-        }
-
-        if (savedNote) {
-          savedNote.classList.add("show");
-        }
-
-        birthdayForm.reset();
-
-        setTimeout(function () {
-          window.location.href = "index.html";
-        }, 700);
-      });
-    }
-  </script>
-</body>
-
-</html>
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 700);
+  });
+</script>
